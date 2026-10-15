@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Better Widgets for macOS</title>
+<meta name="description" content="Beautiful, minimal desktop widgets for macOS: clock, calendar, weather, CPU, memory, storage and a task manager. Free and open source.">
+<meta property="og:title" content="Better Widgets for macOS">
+<meta property="og:description" content="Beautiful, minimal desktop widgets for macOS. Free and open source.">
+<meta property="og:image" content="https://pranshavshelat.github.io/Better_Widgets_mac/assets/screenshot.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<style>
+  :root {
+    --bg: #050506;
+    --surface: #111113;
+    --surface-2: #18181b;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --text: #f5f5f7;
+    --muted: #a1a1a6;
+    --faint: #6e6e73;
+    --accent: #ffffff;
+    --radius: 22px;
+    --max: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background: rgba(5, 5, 6, 0.72);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand img { width: 28px; height: 28px; }
+  .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
+  .nav-links a:hover { color: var(--text); }
+
+  /* Hero */
+  .hero { position: relative; text-align: center; padding: 96px 0 40px; }
+  .hero::before {
+    content: ""; position: absolute; inset: -200px 0 auto; height: 700px; z-index: -1;
+    background: radial-gradient(ellipse 50% 45% at 50% 40%, rgba(120, 130, 160, 0.22), transparent 70%);
+  }
+  .hero-icon { width: 112px; height: 112px; filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6)); }
+  h1 {
+    font-size: clamp(44px, 7vw, 84px); line-height: 1.02; letter-spacing: -0.045em; font-weight: 700;
+    margin: 28px 0 18px;
+    background: linear-gradient(180deg, #ffffff 30%, #8e8e93);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .lede { font-size: clamp(18px, 2.2vw, 22px); color: var(--muted); max-width: 640px; margin: 0 auto; letter-spacing: -0.01em; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 36px 0 14px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 16px;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #e8e8ed; }
+  .btn-ghost { border: 1px solid var(--border-strong); color: var(--text); }
+  .btn-ghost:hover { border-color: rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.04); }
+  .btn svg { width: 18px; height: 18px; }
+  .meta { font-size: 13px; color: var(--faint); }
+
+  /* Screenshot */
+  /* The cards float over soft, out-of-focus colour, like a blurred wallpaper. */
+  .shot { margin: 48px auto 0; max-width: 1100px; position: relative; isolation: isolate; }
+  .shot .glow { position: absolute; inset: 6% -4% 0; z-index: -1; filter: blur(70px); opacity: .9; pointer-events: none; }
+  .shot .glow span { position: absolute; border-radius: 50%; }
+  .shot .glow span:nth-child(1) { width: 52%; height: 60%; left: 2%;  top: 0;   background: #3d4f7c; }
+  .shot .glow span:nth-child(2) { width: 42%; height: 55%; right: 4%; top: 6%;  background: #5f3f72; }
+  .shot .glow span:nth-child(3) { width: 50%; height: 50%; left: 30%; bottom: 0; background: #275f63; }
+  .shot .glow span:nth-child(4) { width: 30%; height: 38%; left: 0;   bottom: 4%; background: #6b5038; }
+  .shot img { display: block; width: 100%; height: auto; filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.55)); }
+
+  /* Sections */
+  section { padding: 120px 0 0; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+  h2 { font-size: clamp(32px, 4.5vw, 52px); line-height: 1.08; letter-spacing: -0.035em; margin: 10px 0 14px; font-weight: 700; }
+  .section-lede { color: var(--muted); font-size: 18px; max-width: 620px; margin: 0; }
+
+  /* Feature grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-top: 44px; }
+  .card {
+    background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px; transition: border-color .25s ease, transform .25s ease;
+  }
+  .card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .card svg { width: 28px; height: 28px; stroke: var(--text); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .card h3 { margin: 18px 0 6px; font-size: 18px; letter-spacing: -0.015em; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+
+  /* Highlights */
+  .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 44px; }
+  .highlight { border-radius: var(--radius); border: 1px solid var(--border); padding: 32px; background: var(--surface); }
+  .highlight .num { font-size: 44px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+  .highlight h3 { margin: 16px 0 6px; font-size: 20px; letter-spacing: -0.02em; }
+  .highlight p { margin: 0; color: var(--muted); }
+
+  /* Install */
+  .steps { counter-reset: step; display: grid; gap: 14px; margin-top: 44px; max-width: 760px; }
+  .step {
+    display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: start;
+    padding: 22px 24px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface);
+  }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--text); color: #000; font-weight: 700;
+  }
+  .step h3 { margin: 2px 0 4px; font-size: 17px; }
+  .step p { margin: 0; color: var(--muted); font-size: 15px; }
+  kbd, code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; }
+  kbd { background: var(--surface-2); border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 6px; padding: 1px 6px; color: var(--text); }
+  .terminal { margin-top: 18px; max-width: 760px; border: 1px solid var(--border); border-radius: 16px; background: #0b0b0d; overflow: hidden; }
+  .terminal-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--faint); font-size: 13px; }
+  .terminal pre { margin: 0; padding: 18px 20px; overflow-x: auto; color: #d1d1d6; font-size: 14px; line-height: 1.7; }
+  .copy { background: none; border: 1px solid var(--border-strong); color: var(--muted); border-radius: 8px; padding: 4px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+  .copy:hover { color: var(--text); }
+
+  /* FAQ */
+  .faq { margin-top: 36px; max-width: 760px; }
+  details { border-bottom: 1px solid var(--border); padding: 20px 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--faint); font-weight: 400; font-size: 22px; line-height: 1; transition: transform .2s ease; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--muted); margin: 12px 0 0; }
+
+  /* Final CTA + footer */
+  .final { text-align: center; padding: 140px 0 120px; }
+  .final img { width: 84px; height: 84px; }
+  footer { border-top: 1px solid var(--border); padding: 36px 0 48px; color: var(--faint); font-size: 13px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--text); }
+
+  /* Reveal on scroll */
+  /* Only hidden once the script is running, so content never stays invisible. */
+  .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+  .js .reveal.visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+    .btn, .card { transition: none; }
+  }
+  @media (max-width: 640px) {
+    .nav-links a:not(:last-child) { display: none; }
+    .hero { padding-top: 64px; }
+    section { padding-top: 88px; }
+    .step { grid-template-columns: 36px 1fr; padding: 18px; }
+    .step::before { width: 36px; height: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="assets/icon.png" alt="">Better Widgets</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/PranshavShelat/Better_Widgets_mac">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="hero-icon" src="assets/icon.png" alt="Better Widgets app icon">
+    <h1>Your desktop,<br>but better.</h1>
+    <p class="lede">Minimal, live widgets for macOS: clock, calendar, weather, CPU, memory, storage and a task manager. Drag them anywhere, resize them, and click to open the matching app.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/PranshavShelat/Better_Widgets_mac/releases/latest/download/Better-Widgets.zip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+        Download for Mac
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/PranshavShelat/Better_Widgets_mac">View on GitHub</a>
+    </div>
+    <p class="meta">Free &amp; open source · macOS 15 or later · Apple silicon &amp; Intel</p>
+    <div class="shot reveal">
+      <div class="glow" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <img src="assets/widgets.png" width="1800" height="1093" alt="Better Widgets cards: clock, weather, CPU, memory, calendar, storage and task manager">
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <div class="eyebrow">Seven widgets</div>
+    <h2>Everything at a glance.</h2>
+    <p class="section-lede">Each card is live, quiet, and one click away from the app behind it.</p>
+    <div class="grid">
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <h3>Clock</h3><p>Analog, digital or both, with a smooth sweeping second hand.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+        <h3>Calendar</h3><p>Today in big type, the month grid and the week number.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9H7z"/></svg>
+        <h3>Weather</h3><p>Current conditions, an hourly graph and a 5-day forecast.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>
+        <h3>CPU</h3><p>Live load ring, per-core bars, history graph and uptime.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 7v10M11 7v10M15 7v10M6 17v3M18 17v3"/></svg>
+        <h3>Memory</h3><p>App, wired, compressed, cached and swap, broken down clearly.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M7 14h.01M11 14h6"/></svg>
+        <h3>Storage</h3><p>Used and free space for your Mac and any external drives.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+        <h3>Task Manager</h3><p>Top processes by CPU or memory. Quit them right from the card.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        <h3>Yours to tune</h3><p>Themes, materials, sizes, units and refresh rate, all in Settings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Feels native</div>
+    <h2>Built to stay out of your way.</h2>
+    <div class="highlights">
+      <div class="highlight reveal">
+        <div class="num">Arrange</div>
+        <h3>Never in the way</h3>
+        <p>One click places every card in free space, around Apple's widgets and your desktop files, names included. Tight on room? Cards shrink to fit.</p>
+      </div>
+      <div class="highlight reveal">
+        <div class="num">Drag · Resize</div>
+        <h3>Exactly where you want</h3>
+        <p>Move cards anywhere and resize each from its corner. Edit mode lets you add, remove and auto-arrange cards.</p>
+      </div>
+      <div class="highlight reveal">
+        <div class="num">0 tracking</div>
+        <h3>Private and lightweight</h3>
+        <p>No account, no analytics, no Dock icon. Stays visible when you show the desktop and hides during Mission Control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <div class="eyebrow">Install</div>
+    <h2>Up and running in a minute.</h2>
+    <p class="section-lede">Better Widgets is free and isn't distributed through the App Store, so macOS asks you to confirm it once.</p>
+    <div class="steps">
+      <div class="step reveal"><div><h3>Download and unzip</h3><p><a href="https://github.com/PranshavShelat/Better_Widgets_mac/releases/latest/download/Better-Widgets.zip"><u>Better-Widgets.zip</u></a>, then drag <b>Better Widgets</b> into your Applications folder.</p></div></div>
+      <div class="step reveal"><div><h3>Open it once</h3><p>macOS says it "could not verify" the app. Click <b>Done</b>.</p></div></div>
+      <div class="step reveal"><div><h3>Allow it</h3><p>Open <b>System Settings → Privacy &amp; Security</b>, scroll down and click <b>Open Anyway</b>, then confirm with your password.</p></div></div>
+      <div class="step reveal"><div><h3>Make it yours</h3><p>Use the gauge icon in the menu bar: pick a weather location, then <b>Arrange → Grid</b>. Allow Accessibility when asked, so Arrange can see your desktop files.</p></div></div>
+    </div>
+    <div class="terminal reveal">
+      <div class="terminal-bar"><span>Or, in Terminal</span><button class="copy" data-copy="xattr -dr com.apple.quarantine &quot;/Applications/Better Widgets.app&quot; &amp;&amp; open &quot;/Applications/Better Widgets.app&quot;">Copy</button></div>
+      <pre><code>xattr -dr com.apple.quarantine "/Applications/Better Widgets.app"
+open "/Applications/Better Widgets.app"</code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2>Questions.</h2>
+    <div class="faq">
+      <details>
+        <summary>Why does macOS warn me when I open it?</summary>
+        <p>Apps outside the App Store need a paid Apple developer certificate to skip that warning. Better Widgets is free and open source, so you confirm it once under Privacy &amp; Security. The full source code is on GitHub.</p>
+      </details>
+      <details>
+        <summary>What permissions does it need?</summary>
+        <p>None are required. Accessibility (optional) lets Arrange see where your desktop icons are so it never covers them. Location (optional) is used only if you choose "Use My Location" for weather.</p>
+      </details>
+      <details>
+        <summary>Does it collect any data?</summary>
+        <p>No. There are no accounts or analytics. The only network request is for weather, which sends just your search text or coordinates to Open-Meteo.</p>
+      </details>
+      <details>
+        <summary>Will it slow down my Mac?</summary>
+        <p>It's built to be light: no Dock icon, efficient system APIs, and an adjustable refresh rate. In Settings → System you can lower the refresh rate or turn off cards you don't need.</p>
+      </details>
+      <details>
+        <summary>How do I uninstall it?</summary>
+        <p>Quit it from the menu-bar icon and move Better Widgets to the Trash. To also remove its settings, run <code>defaults delete io.github.pranshavshelat.betterwidgets</code> in Terminal.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<div class="final">
+  <div class="wrap">
+    <img src="assets/icon.png" alt="">
+    <h2>Make your desktop better.</h2>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/PranshavShelat/Better_Widgets_mac/releases/latest/download/Better-Widgets.zip">Download for Mac</a>
+      <a class="btn btn-ghost" href="https://github.com/PranshavShelat/Better_Widgets_mac">Star on GitHub</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Pranshav Shelat · <a href="https://github.com/PranshavShelat/Better_Widgets_mac/blob/main/LICENSE">MIT License</a></span>
+    <span>Weather data by <a href="https://open-meteo.com">Open-Meteo.com</a> (<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>)</span>
+    <span>Not affiliated with Apple Inc. macOS is a trademark of Apple Inc.</span>
+  </div>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+  // Fade sections in as they scroll into view.
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+    }
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Copy buttons.
+  document.querySelectorAll('.copy').forEach(button => {
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy);
+        button.textContent = 'Copied';
+      } catch {
+        button.textContent = 'Press ⌘C';
+      }
+      setTimeout(() => { button.textContent = 'Copy'; }, 1600);
+    });
+  });
+</script>
+</body>
+</html>
