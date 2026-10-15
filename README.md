@@ -10,6 +10,8 @@ Clock · Calendar · Weather · CPU · Memory · Storage · Task Manager
 [![Download](https://img.shields.io/badge/Download-for%20macOS-000000?style=for-the-badge)](https://github.com/PranshavShelat/Better_Widgets_mac/releases/latest/download/Better-Widgets.zip)
 &nbsp;
 [![Website](https://img.shields.io/badge/Website-visit-1c1c1e?style=for-the-badge)](https://pranshavshelat.github.io/Better_Widgets_mac/)
+&nbsp;
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/pranshav)
 
 [![Release](https://img.shields.io/github/v/release/PranshavShelat/Better_Widgets_mac?style=flat-square&color=111111&label=release)](https://github.com/PranshavShelat/Better_Widgets_mac/releases/latest)
 [![macOS](https://img.shields.io/badge/macOS-15%2B-111111?style=flat-square)](#requirements)
@@ -191,6 +193,12 @@ defaults delete io.github.pranshavshelat.betterwidgets
 
 Then remove Better Widgets from *System Settings → Privacy & Security → Accessibility*.
 </details>
+
+<br>
+
+## ✦ Support
+
+Better Widgets is free and always will be. If it made your desktop a little better, you can [**buy me a coffee ☕**](https://buymeacoffee.com/pranshav). Starring the repo ⭐ helps a lot too.
 
 <br>
 
