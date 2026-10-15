@@ -53,10 +53,10 @@ Each card is its own desktop widget that you can **drag anywhere, resize from th
 
 1. **[Download Better-Widgets.zip](https://github.com/PranshavShelat/Better_Widgets_mac/releases/latest/download/Better-Widgets.zip)** and unzip it.
 2. Drag **Better Widgets** into your **Applications** folder.
-3. Open it. macOS will say it *"could not verify"* the app, because it isn't from the App Store or a paid Apple developer account. Click **Done**.
+3. Open it. macOS shows **"Better Widgets" Not Opened**: *"Apple could not verify…"*. Click **Done**, not Move to Trash.
 4. Go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway** next to Better Widgets. Confirm with your password.
 
-You only need to do step 4 once.
+You only need to do step 4 once. The warning appears because the app isn't from the App Store or signed with a paid Apple developer certificate, not because anything is wrong with it. The full source code is in this repo.
 
 <details>
 <summary><b>Prefer Terminal?</b></summary>
@@ -155,9 +155,9 @@ swift build && .build/debug/BetterWidgets --selftest "London"          # print e
 ## ✦ Troubleshooting
 
 <details>
-<summary><b>"Better Widgets" can't be opened / could not be verified</b></summary>
+<summary><b>"Better Widgets" Not Opened / Apple could not verify it</b></summary>
 
-See step 4 of [Install](#-install): *System Settings → Privacy & Security → Open Anyway*.
+Click **Done**, then go to *System Settings → Privacy & Security* and click **Open Anyway**, as in step 4 of [Install](#-install). If you clicked Move to Trash, just download it again.
 </details>
 
 <details>
